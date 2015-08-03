@@ -101,4 +101,14 @@ defmodule Phoenix.ViewTest do
     assert html ==
            "<html>\n  <title>Test</title>\n  <div>Show! Hello world</div>\n\n\n</html>\n"
   end
+
+  test "render_one/2 uses the correct namepace for default view" do
+    user = %MyApp.User{name: "John"}
+    post = %MyApp.Post{title: "My Post", user: user}
+    post = MyApp.V1.PostView.render("show.json", %{post: post}) |> IO.inspect
+    assert post.user.version == 1
+
+    # post = MyApp.V2.PostView.render("show.json", %{post: post})
+    # assert post.user.version == 2
+  end
 end

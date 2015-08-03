@@ -228,5 +228,25 @@ defmodule Phoenix.View do
       content
     end
   end
+
+  def view_for_record(%{__struct__: model}, view) do
+    model_name = Module.split(model) |> List.last
+    view_namespace(view)
+    |> Enum.join(".")
+    |> Kernel.<>(".#{model_name}View")
+    |> IO.inspect
+    |> String.split(".")
+    |> Module.concat
+  end
+
+  def view_namespace(view) do
+    view |> Module.split |> List.delete_at(-1)
+  end
+
+  defmacro render_one(record, template) do
+   quote bind_quoted: [record: record, template: template] do
+      view_for_record(record, __MODULE__).render(template, %{user: record})
+    end
+  end
 end
 
